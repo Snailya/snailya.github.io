@@ -4,15 +4,32 @@
   <meta charset="utf-8">
   
   
-  <title>Snailya&#39;s Blog</title>
+  <title>解决Visio外部数据绑定无效：自定义形状ID属性 | Snailya&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Snailya&#39;s Blog">
-<meta property="og:url" content="https://snailya.github.io/index.html">
+  <meta name="description" content="引言在 Visio 中，可以通过使用外部数据来创建和更新图标、图形和其它可视化元素。例如，可以通过外部数据绑定，建立形状与数据表之间的同步关系，实现当外部数据发生变化时，Visio 图形的自动更新。利用这个方法，既可以解决人工通过 Excel 批量修改形状数据的需求，又可以实现数据库自动更新数据的需求。 但是，目前针对外部数据功能的教程非常少，均是以组织架构图或时序图为例，以人工拖拽的方式实现数据">
+<meta property="og:type" content="article">
+<meta property="og:title" content="解决Visio外部数据绑定无效：自定义形状ID属性">
+<meta property="og:url" content="https://snailya.github.io/2023/06/25/%E8%A7%A3%E5%86%B3Visio%E5%A4%96%E9%83%A8%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A%E5%A4%B1%E8%B4%A5%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BD%A2%E7%8A%B6ID%E5%B1%9E%E6%80%A7/index.html">
 <meta property="og:site_name" content="Snailya&#39;s Blog">
+<meta property="og:description" content="引言在 Visio 中，可以通过使用外部数据来创建和更新图标、图形和其它可视化元素。例如，可以通过外部数据绑定，建立形状与数据表之间的同步关系，实现当外部数据发生变化时，Visio 图形的自动更新。利用这个方法，既可以解决人工通过 Excel 批量修改形状数据的需求，又可以实现数据库自动更新数据的需求。 但是，目前针对外部数据功能的教程非常少，均是以组织架构图或时序图为例，以人工拖拽的方式实现数据">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2023/06/25/KcMqIOdNn2SVwLi.png">
+<meta property="og:image" content="https://s2.loli.net/2023/06/25/FguYD1bfpV2OBlo.png">
+<meta property="og:image" content="https://s2.loli.net/2023/06/25/lC1HozFsIpYK5rw.png">
+<meta property="og:image" content="https://s2.loli.net/2023/06/25/gz3oXulY4riAytB.png">
+<meta property="og:image" content="https://s2.loli.net/2023/06/25/ZrU6nLWj3AzpqKI.png">
+<meta property="og:image" content="https://s2.loli.net/2023/06/25/ytJuX4R3IxpNgrs.png">
+<meta property="og:image" content="https://s2.loli.net/2023/06/25/MRSHE8ay3e2jmoO.png">
+<meta property="og:image" content="https://s2.loli.net/2023/06/25/RjM9OdT1m4nqphN.png">
+<meta property="og:image" content="https://s2.loli.net/2023/06/25/JCXdDK13pUy42xH.png">
+<meta property="article:published_time" content="2023-06-25T02:52:20.000Z">
+<meta property="article:modified_time" content="2023-06-25T07:45:10.573Z">
 <meta property="article:author" content="Snailya">
+<meta property="article:tag" content="Visio">
+<meta property="article:tag" content="外部数据">
+<meta property="article:tag" content="数据绑定">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2023/06/25/KcMqIOdNn2SVwLi.png">
   
     <link rel="alternate" href="/atom.xml" title="Snailya's Blog" type="application/atom+xml">
   
@@ -71,9 +88,7 @@
 </header>
 
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-解决Visio外部数据绑定失败：自定义形状ID属性" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <section id="main"><article id="post-解决Visio外部数据绑定失败：自定义形状ID属性" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2023/06/25/%E8%A7%A3%E5%86%B3Visio%E5%A4%96%E9%83%A8%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A%E5%A4%B1%E8%B4%A5%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BD%A2%E7%8A%B6ID%E5%B1%9E%E6%80%A7/" class="article-date">
   <time class="dt-published" datetime="2023-06-25T02:52:20.000Z" itemprop="datePublished">2023-06-25</time>
@@ -86,8 +101,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2023/06/25/%E8%A7%A3%E5%86%B3Visio%E5%A4%96%E9%83%A8%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A%E5%A4%B1%E8%B4%A5%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BD%A2%E7%8A%B6ID%E5%B1%9E%E6%80%A7/">解决Visio外部数据绑定无效：自定义形状ID属性</a>
+    <h1 class="p-name article-title" itemprop="headline name">
+      解决Visio外部数据绑定无效：自定义形状ID属性
     </h1>
   
 
@@ -138,127 +153,19 @@
     </footer>
   </div>
   
-</article>
-
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-修复Visio容器调整尺寸引发的意外的文件尾错误：正确的容器定义方法" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2023/06/01/%E4%BF%AE%E5%A4%8DVisio%E5%AE%B9%E5%99%A8%E8%B0%83%E6%95%B4%E5%B0%BA%E5%AF%B8%E5%BC%95%E5%8F%91%E7%9A%84%E6%84%8F%E5%A4%96%E7%9A%84%E6%96%87%E4%BB%B6%E5%B0%BE%E9%94%99%E8%AF%AF%EF%BC%9A%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%AE%B9%E5%99%A8%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95/" class="article-date">
-  <time class="dt-published" datetime="2023-06-01T02:12:51.000Z" itemprop="datePublished">2023-06-01</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2023/06/01/%E4%BF%AE%E5%A4%8DVisio%E5%AE%B9%E5%99%A8%E8%B0%83%E6%95%B4%E5%B0%BA%E5%AF%B8%E5%BC%95%E5%8F%91%E7%9A%84%E6%84%8F%E5%A4%96%E7%9A%84%E6%96%87%E4%BB%B6%E5%B0%BE%E9%94%99%E8%AF%AF%EF%BC%9A%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%AE%B9%E5%99%A8%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95/">修复Visio容器调整尺寸引发的意外的文件尾错误：正确的容器定义方法</a>
-    </h1>
+    <a href="/2023/06/01/%E4%BF%AE%E5%A4%8DVisio%E5%AE%B9%E5%99%A8%E8%B0%83%E6%95%B4%E5%B0%BA%E5%AF%B8%E5%BC%95%E5%8F%91%E7%9A%84%E6%84%8F%E5%A4%96%E7%9A%84%E6%96%87%E4%BB%B6%E5%B0%BE%E9%94%99%E8%AF%AF%EF%BC%9A%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%AE%B9%E5%99%A8%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">修复Visio容器调整尺寸引发的意外的文件尾错误：正确的容器定义方法</div>
+    </a>
   
+</nav>
 
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>容器是 Visio 中一类可以帮助实现结构化组织和管理其它图形元素的特殊对象。通过容器，您可以将相关的子图形放置在一个框架内，以便更清晰地展示信息和关系。在管理员定义方面，与组合相比，容器可以实现更丰富的预定义内容：形状结构、外观样式、连接点定义等，以满足不同公司对图表样式的要求。在用户操作方面，用户可以通过将子图形拖拽在容器内或容器外轻松实现将子图形加入或移出容器，通过拖拽容器可以实现容器内子图形的一起移动。因此，容器尤其适用于图表、流程图、组织结构图的设计。</p>
-<p>但是，容器作为 Visio2010 的新增特性，Visio 并没有提供关于自定义容器的相关教程及建议，这也使得当前 Visio 容器的定义存在极高的自由度。通常，若将一个对象定义为容器，只需要在该对象 Spreadsheet 中的 User Section 内增加<code>msvStructureType</code>属性，并设置其值为<code>=&quot;Container&quot;</code>。</p>
-<p><img src="https://s2.loli.net/2023/06/01/F7hI19NnCyGziPt.png" alt="create-a-container.png"><br>但是，这种简单的定义可能会在特定情况下引发<code>意外的文件尾</code>错误。</p>
-<p><img src="https://s2.loli.net/2023/06/01/TYaG18djwNZW2sL.png" alt="unexpected-end-of-file.png"></p>
-<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>星期一的时候，我的同事向我演示了他是如何引起这个错误的。首先，他将一条表示管路的线段放在了表示功能单元的容器内。由于这条管路表示外部进来的管路，所以他希望这条线段一端恰好贴在容器边框，另一端落在容器内。随后，他又删除了这条线段。在此之后，当他想要调整容器的尺寸时，出现了这个错误。<br><img src="https://s2.loli.net/2023/06/01/7PwEGvabXVqdio6.png" alt="a-line-in-the-container.png"></p>
-<p><img src="https://s2.loli.net/2023/06/01/bDJ3cExyn1Qehsk.png" alt="error-when-resize-container-after-remove-line.png.png"></p>
-<p>当我尝试复现这个错误时，我发现使用 Visio 预定义的容器并不会引发该现象。</p>
-<h2 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h2><p>通过仔细对比我们自定义的容器和 Visio 预定义的容器，我们确定了以下两个前置条件：</p>
-<ol>
-<li>线段一端必须吸附在容器的几何形状上。当线段被吸附至容器的几何形状上时，点击容器，连接处可以看到如图所示的高亮的连接点。</li>
-</ol>
-<p><img src="https://s2.loli.net/2023/06/01/CDl6AM3PNg4HtLG.png" alt="glue-line-to-container-geometry.png"></p>
-<p>在默认状态下，拖拽线段至容器的边界不会引发吸附，除非文档模板中预定义或用户手动开启了该功能。该功能位于 <code>View</code>-<code>Visual aids</code>-<code>Snap &amp; Glue</code>-<code>General</code>-<code>Glue to</code>节，勾选 Shape geometery 可以启用该功能。</p>
-<p><img src="https://s2.loli.net/2023/06/01/RVMuCWfdjAyXeiE.png" alt="snap-and-glue.png"></p>
-<ol start="2">
-<li>被吸附的容器的几何形状必须定义在容器本身，而不是容器组合的子对象。也就是说，表示几何形状的 Geometry Section 位于容器的 Spreadsheet 内。</li>
-</ol>
-<p><img src="https://s2.loli.net/2023/06/01/imehkFnI6H94NzU.png" alt="geometry-defined-in-container.png"></p>
-<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>要解决这个问题，我们需要将容器的几何形状定义在容器组合的子对象中。也就是说，在创建自定义容器时，不应在容器自身的 Spreadsheet 中定义 Geometry，而应将容器转换为组合，并将表示容器几何形状的对象作为容器组合的子对象。</p>
-<p>以下给出了建议的自定义容器步骤：</p>
-<ol>
-<li>插入表示容器造型的形状对象；</li>
-<li>将这些形状对象使用 <code>Ctrl+G</code>组合成一个组合对象；</li>
-<li>打开组合对象的 Spreadsheet，并在 User Section 内增加<code>msvStructureType</code>属性，并设置其值为<code>=&quot;Container&quot;</code>。</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://snailya.github.io/2023/06/01/%E4%BF%AE%E5%A4%8DVisio%E5%AE%B9%E5%99%A8%E8%B0%83%E6%95%B4%E5%B0%BA%E5%AF%B8%E5%BC%95%E5%8F%91%E7%9A%84%E6%84%8F%E5%A4%96%E7%9A%84%E6%96%87%E4%BB%B6%E5%B0%BE%E9%94%99%E8%AF%AF%EF%BC%9A%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%AE%B9%E5%99%A8%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95/" data-id="clicvgtxb0000pkvye5a95x8a" data-title="修复Visio容器调整尺寸引发的意外的文件尾错误：正确的容器定义方法" class="article-share-link"><span class="fa fa-share">分享</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Visio/" rel="tag">Visio</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AE%B9%E5%99%A8/" rel="tag">容器</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%84%8F%E5%A4%96%E7%9A%84%E6%96%87%E4%BB%B6%E5%B0%BE/" rel="tag">意外的文件尾</a></li></ul>
-
-    </footer>
-  </div>
   
 </article>
-
-
-
-  
-    <article id="post-hello-world" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2023/06/01/hello-world/" class="article-date">
-  <time class="dt-published" datetime="2023-06-01T01:05:25.903Z" itemprop="datePublished">2023-06-01</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2023/06/01/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://snailya.github.io/2023/06/01/hello-world/" data-id="clicfr6ov0000fgvy9eaq5o8p" data-title="Hello World" class="article-share-link"><span class="fa fa-share">分享</span></a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
 </section>
