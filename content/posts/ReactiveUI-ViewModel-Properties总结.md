@@ -1,0 +1,64 @@
++++
+title = 'ReactiveUI ViewModel Properties总结'
+date = 2024-01-11T14:36:16+08:00
+draft = false
+categories = ['ReactiveUI']
++++
+
+## 属性类型
+
+在ReactiveUI中，ViewModel中的属性可以根据其用途划分为三种情况：读写属性（Read-Write Properties）、只读属性（Read-Only Properties）和输出属性（Output Properties）。
+
+读写属性 (Read-Write Properties):
+
+读写属性是可以被服务修改，也可以被用户在View中修改的属性。这类属性是我们通常比较熟悉的普通属性。
+
+例如，用户的姓名可能是被服务加载的，而在加载之后又被用户修改。
+
+只读属性 (Read-Only Properties):
+
+只读属性是在构造函数中被初始化且在之后不再变化的属性。
+
+例如， 用户的ID在一般情况下时不允许变化的。
+
+输出属性 (Output Properties):
+
+输出属性是ReactiveUI中新提出的概念，初次接触ReactiveUI时，可能会将输出属性与只读属性混为一谈。尽管输出属性对于用户而言是只读的，但是对于属性本身是可变的。这类属性通常由Observable变化而成，表示属性值可能随时间变化。
+例如，用户负债率随用户的总资产和总负债变化，但负债率属性本身是不允许被用户修改的。
+
+在ReactiveUI中，使用这三种属性类型可以更清晰地表示属性的特性和用途。读写属性用于需要双向绑定的数据，只读属性用于一次性初始化后不再改变的数据，而输出属性用于表示可能随时间变化的数据流。这种划分有助于更好地理解和管理ViewModel中的属性。
+
+## 声明方式
+
+读写属性总是使用固定的方式声明。
+
+``` C#
+private string name;
+public string Name 
+{
+    get => name;
+    set => this.RaiseAndSetIfChanged(ref name, value);
+}
+
+```
+
+只读属性使用一般的声明方式即可。
+
+``` C#
+public int id {get;};
+```
+
+输出属性也是使用固定的方式进行声明，但是在初始化时需要注意。
+
+``` C#
+// 声明
+private readonly ObservableAsPropertyHelper<double> _debtAssetRatio;
+public string DebtAssetRatio => _debtAssetRatio.Value;
+
+// WhenAnyValue产生一个Observable，当Debt或Asset变化时，会发出新的Debt/Asset的值。这里需要注意Debt和Asset必须也实现了INotifyPropertyChanged，否则无法观察到它们的变化。
+// ToProperty将Observable转变为ObservableAsPropertyHelper。
+UserAccountViewModel(){
+    this.WhenAnyValue(x => x.Debt, x => x.Asset, (debt, asset) => debt/asset)
+        .ToProperty(this, x => x.DebtAssetRatio, out _debtAssetRatio);
+}
+```
