@@ -63,8 +63,8 @@ params:
   # profile-mode
   profileMode:
     enabled: false # needs to be explicitly set
-    title: ExampleSite
-    subtitle: "This is subtitle"
+    title: Snailya虾啵啵
+    subtitle: "Snailya的生活随笔与技术总结"
     imageUrl: "<img location>"
     imageWidth: 120
     imageHeight: 120
