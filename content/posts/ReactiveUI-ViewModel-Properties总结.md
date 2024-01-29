@@ -3,6 +3,7 @@ title = 'ReactiveUI ViewModel Properties总结'
 date = 2024-01-11T14:36:16+08:00
 draft = false
 categories = ['ReactiveUI']
+keywords = ['ReactiveUI','MVVM','声明','模板']
 +++
 
 ## 属性类型

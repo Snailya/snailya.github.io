@@ -22,7 +22,7 @@ params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
   title: Snailya虾啵啵
   description: "Snailya的生活随笔与技术总结"
-  keywords: [Blog, Life, .NET]
+  keywords: [Snailya, snailya, Blog, Life, .NET]
   author: Snailya
   # author: ["Me", "You"] # multiple authors
   images: ["<link or path of image for opengraph, twitter-cards>"]
