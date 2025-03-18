@@ -1,27 +1,34 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>部署 on Snailya虾啵啵</title>
-    <link>https://snailya.github.io/categories/%E9%83%A8%E7%BD%B2/</link>
+    <link>http://localhost:1313/categories/%E9%83%A8%E7%BD%B2/</link>
     <description>Recent content in 部署 on Snailya虾啵啵</description>
     <image>
       <title>Snailya虾啵啵</title>
-      <url>https://snailya.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
-      <link>https://snailya.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+      <url>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
     </image>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo -- 0.145.0</generator>
     <language>en</language>
     <lastBuildDate>Thu, 28 Dec 2023 15:13:34 +0800</lastBuildDate>
-    <atom:link href="https://snailya.github.io/categories/%E9%83%A8%E7%BD%B2/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/categories/%E9%83%A8%E7%BD%B2/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Visual Studio Installer实现覆盖安装新版本的方法</title>
-      <link>https://snailya.github.io/posts/visual-studio-installer%E5%AE%9E%E7%8E%B0%E8%A6%86%E7%9B%96%E5%AE%89%E8%A3%85%E6%96%B0%E7%89%88%E6%9C%AC%E7%9A%84%E6%96%B9%E6%B3%95/</link>
+      <link>http://localhost:1313/posts/visual-studio-installer%E5%AE%9E%E7%8E%B0%E8%A6%86%E7%9B%96%E5%AE%89%E8%A3%85%E6%96%B0%E7%89%88%E6%9C%AC%E7%9A%84%E6%96%B9%E6%B3%95/</link>
       <pubDate>Thu, 28 Dec 2023 15:13:34 +0800</pubDate>
-      <guid>https://snailya.github.io/posts/visual-studio-installer%E5%AE%9E%E7%8E%B0%E8%A6%86%E7%9B%96%E5%AE%89%E8%A3%85%E6%96%B0%E7%89%88%E6%9C%AC%E7%9A%84%E6%96%B9%E6%B3%95/</guid>
-      <description>当使用Visual Studio Installer进行打包时，要实现安装时自动卸载旧版本然后安装新版本，需要同时设置以下各点：
-Deployment Project Properties -&amp;gt; DetectNewerInstalledVersion -&amp;gt; True Deployment Project Properties -&amp;gt; RemovePreviousVersions -&amp;gt; True Deployment Project Properties -&amp;gt; Version 其中，Version被安装程序用来判断是否继续执行安装程序，所以Version值应大于上一个版本。
-满足以上条件时，执行安装程序可以顺利执行，且控制面板中可以看到更新后的版本号。但是，安装程序仍然可能没有正确执行。这是因为项目的主输出并没有被正确拷贝。这往往是因为没有正确设置项目（程序项目，非部署项目）的AssemblyInfo。主输出中的Version将被用来比较是否需要拷贝主输出到安装目录，所以当上一版本的主输出版本为0.2.1.0时，即使已经设置部署项目的Version为0.2.2.0，由于此时主输出的版本仍然为0.2.1.0，安装过程中不会拷贝新生成的主输出到安装目录。
-主输出的Version设置位于程序项目的AssemblyInfo.cs文件中。只有当此文件中的AssemblyVersion或AssemblyFileVersion的值大于上一个版本的值时，才会覆盖原安装目录的dll。</description>
+      <guid>http://localhost:1313/posts/visual-studio-installer%E5%AE%9E%E7%8E%B0%E8%A6%86%E7%9B%96%E5%AE%89%E8%A3%85%E6%96%B0%E7%89%88%E6%9C%AC%E7%9A%84%E6%96%B9%E6%B3%95/</guid>
+      <description>&lt;p&gt;当使用Visual Studio Installer进行打包时，要实现安装时自动卸载旧版本然后安装新版本，需要同时设置以下各点：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Deployment Project Properties -&amp;gt; DetectNewerInstalledVersion -&amp;gt; True&lt;/li&gt;
+&lt;li&gt;Deployment Project Properties -&amp;gt; RemovePreviousVersions -&amp;gt; True&lt;/li&gt;
+&lt;li&gt;Deployment Project Properties -&amp;gt; Version&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img alt=&#34;deployment-project-properties.png&#34; loading=&#34;lazy&#34; src=&#34;https://s2.loli.net/2023/12/28/5ToctnJNzqDbaks.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;其中，Version被安装程序用来判断是否继续执行安装程序，所以Version值应大于上一个版本。&lt;/p&gt;
+&lt;p&gt;满足以上条件时，执行安装程序可以顺利执行，且控制面板中可以看到更新后的版本号。但是，安装程序仍然可能没有正确执行。这是因为项目的主输出并没有被正确拷贝。这往往是因为没有正确设置项目（程序项目，非部署项目）的AssemblyInfo。主输出中的Version将被用来比较是否需要拷贝主输出到安装目录，所以当上一版本的主输出版本为0.2.1.0时，即使已经设置部署项目的Version为0.2.2.0，由于此时主输出的版本仍然为0.2.1.0，安装过程中不会拷贝新生成的主输出到安装目录。&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;assembly-info.png&#34; loading=&#34;lazy&#34; src=&#34;https://s2.loli.net/2023/12/28/BipWZAytP5qGQrl.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;主输出的Version设置位于程序项目的AssemblyInfo.cs文件中。只有当此文件中的AssemblyVersion或AssemblyFileVersion的值大于上一个版本的值时，才会覆盖原安装目录的dll。&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

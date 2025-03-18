@@ -1,6 +1,7 @@
 baseURL: "https://snailya.github.io/"
 title: Snailya虾啵啵
-paginate: 5
+pagination:
+  pagerSize: 10
 theme: PaperMod
 
 enableRobotsTXT: true
