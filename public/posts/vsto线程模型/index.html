@@ -1,0 +1,214 @@
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>VSTO线程模型 | Snailya虾啵啵</title>
+<meta name=keywords content><meta name=description content='在VSTO开发领域，每个开发者都曾经历过这样的挫败：精心设计的插件界面在数据加载时陷入卡顿，复杂的计算过程使整个Office程序失去响应。这不是代码质量问题，而是VSTO特有的线程模型带来的挑战。本文将围绕如何利用独立线程和异步调度解决该问题进行剖析。
+VSTO线程模型的本质矛盾
+Office的COM对象是基于单线程单元（STA, Single Threaded Apartment）模型的。这个模型的好处是保障了线程安全，但也造成了性能瓶颈。具体表现：
+
+UI线程和Office线程绑在一起，做耗时数据读取或计算时，界面会卡死甚至完全无响应。
+想用多线程访问COM对象？ 不行，需要走代理（Proxy）封送（marshalling）调用，开销大且复杂。
+
+这种设计就像双刃剑，让我们陷入两难：一边要保证线程安全，一边又想流畅不卡顿。
+突破瓶颈的思路：线程分离 + 异步计算
+要打破这个瓶颈，必须实现UI线程与Office线程的分离，并确保所有COM对象的访问都发生在Office线程上。同时，为避免业务逻辑阻塞UI或Office线程，计算应异步在线程池（TaskPool）中进行。
+这带来关键问题：如何在不同线程间高效且安全地传递数据？
+
+如何在后台任务中发起Office数据读取，并调度到VSTO主线程执行？
+数据处理完成后，如何将结果发回UI线程，满足UI线程禁止跨线程更新界面的要求？
+
+那具体怎么调度线程？如何跨线程安全调用Office对象并更新UI？这里，SynchronizationContext和调度器（Scheduler）派上用场了。
+下面用时序图简单描述整体流程：
+sequenceDiagram
+    UI线程->>+线程池: 发起计算请求
+    线程池->>+VSTO主线程: 通过Office的SyncContext或Scheduler获取数据
+    VSTO主线程-->>-线程池: 返回封送后的数据
+    线程池->>线程池: 执行计算
+    线程池->>+UI线程: 通过UI的SyncContext或Dispatcher更新界面
+SynchronizationContext 的选型与实践
+为 VSTO 主线程设置上下文
+SynchronizationContext是一种线程抽象机制，提供“将任务调度到指定线程”的能力。VSTO项目启动时默认无上下文，无法通过SynchronizationContext.Current直接获取VSTO主线程上下文。
+一种解决方案是自定义上下文，但更简便的做法是利用Office主线程已有的Win32消息泵，使用WindowsFormsSynchronizationContext。尽管名字带“Windows Forms”，它不仅限于WinForms应用，只要线程是STA且运行Win32消息循环，它都能正常工作。
+若需更细粒度的任务优先级控制，可考虑DispatcherSynchronizationContext，但它实现复杂且需手动启动消息泵。因职责已隔离，通常用WindowsFormsSynchronizationContext即可。
+示例：
+public partial class ThisAddIn
+{
+    private static SynchronizationContext _officeSyncContext;
+
+    private void ThisAddIn_Startup(object sender, System.EventArgs e)
+    {
+        // 为 VSTO 主线程设置上下文，供后续调度使用
+        _officeSyncContext = new WindowsFormsSynchronizationContext();
+        SynchronizationContext.SetSynchronizationContext(_officeSyncContext);
+
+        // 其他初始化代码
+    }
+}
+在自建 UI 线程中设置上下文
+WPF和WinForms要求UI线程必须是STA，然而默认线程池线程为MTA，不适合做UI线程。为避免阻塞Office线程（VSTO_Main，唯一STA线程），只能新建一个专用STA线程运行UI。
+Avalonia允许非STA线程，但考虑到VSTO依赖Windows平台和消息泵机制，建议UI线程依然使用STA模式。
+WPF/WinForms依赖Win32消息泵，同样可用WindowsFormsSynchronizationContext。
+示例：
+public partial class ThisAddIn
+{
+    private static SynchronizationContext _uiSyncContext;
+
+    private void ThisAddIn_Startup(object sender, System.EventArgs e)
+    {
+        // 其它代码
+
+        // 创建专用 UI 线程
+        _uiThread = new Thread(() =>
+        {
+            _uiSyncContext = new WindowsFormsSynchronizationContext();
+            SynchronizationContext.SetSynchronizationContext(_uiSyncContext);
+        })
+        {
+            Name = "UI Thread",
+            IsBackground = true
+        };
+        _uiThread.SetApartmentState(ApartmentState.STA);
+        _uiThread.Start();
+    }
+}
+利用SynchronizationContext.Post可在线程池、VSTO主线程与UI线程间安全传递数据。'><meta name=author content="Snailya"><link rel=canonical href=http://localhost:1313/posts/vsto%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/><meta name=google-site-verification content="_nlVQH6tLVYCE2QdNfIoFucl_5aGPyN1U8HOag0GDZg"><meta name=yandex-verification content="XYZabc"><meta name=msvalidate.01 content="XYZabc"><link crossorigin=anonymous href=/assets/css/stylesheet.6da9a63d25a9608bca2f7f907a030e887a7dd3c3f3918e4cc113129361414bda.css integrity="sha256-bammPSWpYIvKL3+QegMOiHp908PzkY5MwRMSk2FBS9o=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=http://localhost:1313/posts/vsto%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><script async src="https://www.googletagmanager.com/gtag/js?id=G-3LD1SQETXX"></script><script>var dnt,doNotTrack=!1;if(!1&&(dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes"),!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-3LD1SQETXX")}</script><meta property="og:url" content="http://localhost:1313/posts/vsto%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/"><meta property="og:site_name" content="Snailya虾啵啵"><meta property="og:title" content="VSTO线程模型"><meta property="og:description" content='在VSTO开发领域，每个开发者都曾经历过这样的挫败：精心设计的插件界面在数据加载时陷入卡顿，复杂的计算过程使整个Office程序失去响应。这不是代码质量问题，而是VSTO特有的线程模型带来的挑战。本文将围绕如何利用独立线程和异步调度解决该问题进行剖析。
+VSTO线程模型的本质矛盾 Office的COM对象是基于单线程单元（STA, Single Threaded Apartment）模型的。这个模型的好处是保障了线程安全，但也造成了性能瓶颈。具体表现：
+UI线程和Office线程绑在一起，做耗时数据读取或计算时，界面会卡死甚至完全无响应。 想用多线程访问COM对象？ 不行，需要走代理（Proxy）封送（marshalling）调用，开销大且复杂。 这种设计就像双刃剑，让我们陷入两难：一边要保证线程安全，一边又想流畅不卡顿。
+突破瓶颈的思路：线程分离 + 异步计算 要打破这个瓶颈，必须实现UI线程与Office线程的分离，并确保所有COM对象的访问都发生在Office线程上。同时，为避免业务逻辑阻塞UI或Office线程，计算应异步在线程池（TaskPool）中进行。
+这带来关键问题：如何在不同线程间高效且安全地传递数据？
+如何在后台任务中发起Office数据读取，并调度到VSTO主线程执行？ 数据处理完成后，如何将结果发回UI线程，满足UI线程禁止跨线程更新界面的要求？ 那具体怎么调度线程？如何跨线程安全调用Office对象并更新UI？这里，SynchronizationContext和调度器（Scheduler）派上用场了。
+下面用时序图简单描述整体流程：
+sequenceDiagram UI线程->>+线程池: 发起计算请求 线程池->>+VSTO主线程: 通过Office的SyncContext或Scheduler获取数据 VSTO主线程-->>-线程池: 返回封送后的数据 线程池->>线程池: 执行计算 线程池->>+UI线程: 通过UI的SyncContext或Dispatcher更新界面 SynchronizationContext 的选型与实践 为 VSTO 主线程设置上下文 SynchronizationContext是一种线程抽象机制，提供“将任务调度到指定线程”的能力。VSTO项目启动时默认无上下文，无法通过SynchronizationContext.Current直接获取VSTO主线程上下文。
+一种解决方案是自定义上下文，但更简便的做法是利用Office主线程已有的Win32消息泵，使用WindowsFormsSynchronizationContext。尽管名字带“Windows Forms”，它不仅限于WinForms应用，只要线程是STA且运行Win32消息循环，它都能正常工作。
+若需更细粒度的任务优先级控制，可考虑DispatcherSynchronizationContext，但它实现复杂且需手动启动消息泵。因职责已隔离，通常用WindowsFormsSynchronizationContext即可。
+示例：
+public partial class ThisAddIn { private static SynchronizationContext _officeSyncContext; private void ThisAddIn_Startup(object sender, System.EventArgs e) { // 为 VSTO 主线程设置上下文，供后续调度使用 _officeSyncContext = new WindowsFormsSynchronizationContext(); SynchronizationContext.SetSynchronizationContext(_officeSyncContext); // 其他初始化代码 } } 在自建 UI 线程中设置上下文 WPF和WinForms要求UI线程必须是STA，然而默认线程池线程为MTA，不适合做UI线程。为避免阻塞Office线程（VSTO_Main，唯一STA线程），只能新建一个专用STA线程运行UI。
+Avalonia允许非STA线程，但考虑到VSTO依赖Windows平台和消息泵机制，建议UI线程依然使用STA模式。
+WPF/WinForms依赖Win32消息泵，同样可用WindowsFormsSynchronizationContext。
+示例：
+public partial class ThisAddIn { private static SynchronizationContext _uiSyncContext; private void ThisAddIn_Startup(object sender, System.EventArgs e) { // 其它代码 // 创建专用 UI 线程 _uiThread = new Thread(() => { _uiSyncContext = new WindowsFormsSynchronizationContext(); SynchronizationContext.SetSynchronizationContext(_uiSyncContext); }) { Name = "UI Thread", IsBackground = true }; _uiThread.SetApartmentState(ApartmentState.STA); _uiThread.Start(); } } 利用SynchronizationContext.Post可在线程池、VSTO主线程与UI线程间安全传递数据。'><meta property="og:locale" content="en"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-06-05T09:48:52+08:00"><meta property="article:modified_time" content="2024-06-05T09:48:52+08:00"><meta property="og:image" content="http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta name=twitter:title content="VSTO线程模型"><meta name=twitter:description content='在VSTO开发领域，每个开发者都曾经历过这样的挫败：精心设计的插件界面在数据加载时陷入卡顿，复杂的计算过程使整个Office程序失去响应。这不是代码质量问题，而是VSTO特有的线程模型带来的挑战。本文将围绕如何利用独立线程和异步调度解决该问题进行剖析。
+VSTO线程模型的本质矛盾
+Office的COM对象是基于单线程单元（STA, Single Threaded Apartment）模型的。这个模型的好处是保障了线程安全，但也造成了性能瓶颈。具体表现：
+
+UI线程和Office线程绑在一起，做耗时数据读取或计算时，界面会卡死甚至完全无响应。
+想用多线程访问COM对象？ 不行，需要走代理（Proxy）封送（marshalling）调用，开销大且复杂。
+
+这种设计就像双刃剑，让我们陷入两难：一边要保证线程安全，一边又想流畅不卡顿。
+突破瓶颈的思路：线程分离 + 异步计算
+要打破这个瓶颈，必须实现UI线程与Office线程的分离，并确保所有COM对象的访问都发生在Office线程上。同时，为避免业务逻辑阻塞UI或Office线程，计算应异步在线程池（TaskPool）中进行。
+这带来关键问题：如何在不同线程间高效且安全地传递数据？
+
+如何在后台任务中发起Office数据读取，并调度到VSTO主线程执行？
+数据处理完成后，如何将结果发回UI线程，满足UI线程禁止跨线程更新界面的要求？
+
+那具体怎么调度线程？如何跨线程安全调用Office对象并更新UI？这里，SynchronizationContext和调度器（Scheduler）派上用场了。
+下面用时序图简单描述整体流程：
+sequenceDiagram
+    UI线程->>+线程池: 发起计算请求
+    线程池->>+VSTO主线程: 通过Office的SyncContext或Scheduler获取数据
+    VSTO主线程-->>-线程池: 返回封送后的数据
+    线程池->>线程池: 执行计算
+    线程池->>+UI线程: 通过UI的SyncContext或Dispatcher更新界面
+SynchronizationContext 的选型与实践
+为 VSTO 主线程设置上下文
+SynchronizationContext是一种线程抽象机制，提供“将任务调度到指定线程”的能力。VSTO项目启动时默认无上下文，无法通过SynchronizationContext.Current直接获取VSTO主线程上下文。
+一种解决方案是自定义上下文，但更简便的做法是利用Office主线程已有的Win32消息泵，使用WindowsFormsSynchronizationContext。尽管名字带“Windows Forms”，它不仅限于WinForms应用，只要线程是STA且运行Win32消息循环，它都能正常工作。
+若需更细粒度的任务优先级控制，可考虑DispatcherSynchronizationContext，但它实现复杂且需手动启动消息泵。因职责已隔离，通常用WindowsFormsSynchronizationContext即可。
+示例：
+public partial class ThisAddIn
+{
+    private static SynchronizationContext _officeSyncContext;
+
+    private void ThisAddIn_Startup(object sender, System.EventArgs e)
+    {
+        // 为 VSTO 主线程设置上下文，供后续调度使用
+        _officeSyncContext = new WindowsFormsSynchronizationContext();
+        SynchronizationContext.SetSynchronizationContext(_officeSyncContext);
+
+        // 其他初始化代码
+    }
+}
+在自建 UI 线程中设置上下文
+WPF和WinForms要求UI线程必须是STA，然而默认线程池线程为MTA，不适合做UI线程。为避免阻塞Office线程（VSTO_Main，唯一STA线程），只能新建一个专用STA线程运行UI。
+Avalonia允许非STA线程，但考虑到VSTO依赖Windows平台和消息泵机制，建议UI线程依然使用STA模式。
+WPF/WinForms依赖Win32消息泵，同样可用WindowsFormsSynchronizationContext。
+示例：
+public partial class ThisAddIn
+{
+    private static SynchronizationContext _uiSyncContext;
+
+    private void ThisAddIn_Startup(object sender, System.EventArgs e)
+    {
+        // 其它代码
+
+        // 创建专用 UI 线程
+        _uiThread = new Thread(() =>
+        {
+            _uiSyncContext = new WindowsFormsSynchronizationContext();
+            SynchronizationContext.SetSynchronizationContext(_uiSyncContext);
+        })
+        {
+            Name = "UI Thread",
+            IsBackground = true
+        };
+        _uiThread.SetApartmentState(ApartmentState.STA);
+        _uiThread.Start();
+    }
+}
+利用SynchronizationContext.Post可在线程池、VSTO主线程与UI线程间安全传递数据。'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"http://localhost:1313/posts/"},{"@type":"ListItem","position":2,"name":"VSTO线程模型","item":"http://localhost:1313/posts/vsto%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"VSTO线程模型","name":"VSTO线程模型","description":"在VSTO开发领域，每个开发者都曾经历过这样的挫败：精心设计的插件界面在数据加载时陷入卡顿，复杂的计算过程使整个Office程序失去响应。这不是代码质量问题，而是VSTO特有的线程模型带来的挑战。本文将围绕如何利用独立线程和异步调度解决该问题进行剖析。\nVSTO线程模型的本质矛盾 Office的COM对象是基于单线程单元（STA, Single Threaded Apartment）模型的。这个模型的好处是保障了线程安全，但也造成了性能瓶颈。具体表现：\nUI线程和Office线程绑在一起，做耗时数据读取或计算时，界面会卡死甚至完全无响应。 想用多线程访问COM对象？ 不行，需要走代理（Proxy）封送（marshalling）调用，开销大且复杂。 这种设计就像双刃剑，让我们陷入两难：一边要保证线程安全，一边又想流畅不卡顿。\n突破瓶颈的思路：线程分离 + 异步计算 要打破这个瓶颈，必须实现UI线程与Office线程的分离，并确保所有COM对象的访问都发生在Office线程上。同时，为避免业务逻辑阻塞UI或Office线程，计算应异步在线程池（TaskPool）中进行。\n这带来关键问题：如何在不同线程间高效且安全地传递数据？\n如何在后台任务中发起Office数据读取，并调度到VSTO主线程执行？ 数据处理完成后，如何将结果发回UI线程，满足UI线程禁止跨线程更新界面的要求？ 那具体怎么调度线程？如何跨线程安全调用Office对象并更新UI？这里，SynchronizationContext和调度器（Scheduler）派上用场了。\n下面用时序图简单描述整体流程：\nsequenceDiagram UI线程-\u0026gt;\u0026gt;+线程池: 发起计算请求 线程池-\u0026gt;\u0026gt;+VSTO主线程: 通过Office的SyncContext或Scheduler获取数据 VSTO主线程--\u0026gt;\u0026gt;-线程池: 返回封送后的数据 线程池-\u0026gt;\u0026gt;线程池: 执行计算 线程池-\u0026gt;\u0026gt;+UI线程: 通过UI的SyncContext或Dispatcher更新界面 SynchronizationContext 的选型与实践 为 VSTO 主线程设置上下文 SynchronizationContext是一种线程抽象机制，提供“将任务调度到指定线程”的能力。VSTO项目启动时默认无上下文，无法通过SynchronizationContext.Current直接获取VSTO主线程上下文。\n一种解决方案是自定义上下文，但更简便的做法是利用Office主线程已有的Win32消息泵，使用WindowsFormsSynchronizationContext。尽管名字带“Windows Forms”，它不仅限于WinForms应用，只要线程是STA且运行Win32消息循环，它都能正常工作。\n若需更细粒度的任务优先级控制，可考虑DispatcherSynchronizationContext，但它实现复杂且需手动启动消息泵。因职责已隔离，通常用WindowsFormsSynchronizationContext即可。\n示例：\npublic partial class ThisAddIn { private static SynchronizationContext _officeSyncContext; private void ThisAddIn_Startup(object sender, System.EventArgs e) { // 为 VSTO 主线程设置上下文，供后续调度使用 _officeSyncContext = new WindowsFormsSynchronizationContext(); SynchronizationContext.SetSynchronizationContext(_officeSyncContext); // 其他初始化代码 } } 在自建 UI 线程中设置上下文 WPF和WinForms要求UI线程必须是STA，然而默认线程池线程为MTA，不适合做UI线程。为避免阻塞Office线程（VSTO_Main，唯一STA线程），只能新建一个专用STA线程运行UI。\nAvalonia允许非STA线程，但考虑到VSTO依赖Windows平台和消息泵机制，建议UI线程依然使用STA模式。\nWPF/WinForms依赖Win32消息泵，同样可用WindowsFormsSynchronizationContext。\n示例：\npublic partial class ThisAddIn { private static SynchronizationContext _uiSyncContext; private void ThisAddIn_Startup(object sender, System.EventArgs e) { // 其它代码 // 创建专用 UI 线程 _uiThread = new Thread(() =\u0026gt; { _uiSyncContext = new WindowsFormsSynchronizationContext(); SynchronizationContext.SetSynchronizationContext(_uiSyncContext); }) { Name = \u0026#34;UI Thread\u0026#34;, IsBackground = true }; _uiThread.SetApartmentState(ApartmentState.STA); _uiThread.Start(); } } 利用SynchronizationContext.Post可在线程池、VSTO主线程与UI线程间安全传递数据。\n","keywords":[],"articleBody":"在VSTO开发领域，每个开发者都曾经历过这样的挫败：精心设计的插件界面在数据加载时陷入卡顿，复杂的计算过程使整个Office程序失去响应。这不是代码质量问题，而是VSTO特有的线程模型带来的挑战。本文将围绕如何利用独立线程和异步调度解决该问题进行剖析。\nVSTO线程模型的本质矛盾 Office的COM对象是基于单线程单元（STA, Single Threaded Apartment）模型的。这个模型的好处是保障了线程安全，但也造成了性能瓶颈。具体表现：\nUI线程和Office线程绑在一起，做耗时数据读取或计算时，界面会卡死甚至完全无响应。 想用多线程访问COM对象？ 不行，需要走代理（Proxy）封送（marshalling）调用，开销大且复杂。 这种设计就像双刃剑，让我们陷入两难：一边要保证线程安全，一边又想流畅不卡顿。\n突破瓶颈的思路：线程分离 + 异步计算 要打破这个瓶颈，必须实现UI线程与Office线程的分离，并确保所有COM对象的访问都发生在Office线程上。同时，为避免业务逻辑阻塞UI或Office线程，计算应异步在线程池（TaskPool）中进行。\n这带来关键问题：如何在不同线程间高效且安全地传递数据？\n如何在后台任务中发起Office数据读取，并调度到VSTO主线程执行？ 数据处理完成后，如何将结果发回UI线程，满足UI线程禁止跨线程更新界面的要求？ 那具体怎么调度线程？如何跨线程安全调用Office对象并更新UI？这里，SynchronizationContext和调度器（Scheduler）派上用场了。\n下面用时序图简单描述整体流程：\nsequenceDiagram UI线程-\u003e\u003e+线程池: 发起计算请求 线程池-\u003e\u003e+VSTO主线程: 通过Office的SyncContext或Scheduler获取数据 VSTO主线程--\u003e\u003e-线程池: 返回封送后的数据 线程池-\u003e\u003e线程池: 执行计算 线程池-\u003e\u003e+UI线程: 通过UI的SyncContext或Dispatcher更新界面 SynchronizationContext 的选型与实践 为 VSTO 主线程设置上下文 SynchronizationContext是一种线程抽象机制，提供“将任务调度到指定线程”的能力。VSTO项目启动时默认无上下文，无法通过SynchronizationContext.Current直接获取VSTO主线程上下文。\n一种解决方案是自定义上下文，但更简便的做法是利用Office主线程已有的Win32消息泵，使用WindowsFormsSynchronizationContext。尽管名字带“Windows Forms”，它不仅限于WinForms应用，只要线程是STA且运行Win32消息循环，它都能正常工作。\n若需更细粒度的任务优先级控制，可考虑DispatcherSynchronizationContext，但它实现复杂且需手动启动消息泵。因职责已隔离，通常用WindowsFormsSynchronizationContext即可。\n示例：\npublic partial class ThisAddIn { private static SynchronizationContext _officeSyncContext; private void ThisAddIn_Startup(object sender, System.EventArgs e) { // 为 VSTO 主线程设置上下文，供后续调度使用 _officeSyncContext = new WindowsFormsSynchronizationContext(); SynchronizationContext.SetSynchronizationContext(_officeSyncContext); // 其他初始化代码 } } 在自建 UI 线程中设置上下文 WPF和WinForms要求UI线程必须是STA，然而默认线程池线程为MTA，不适合做UI线程。为避免阻塞Office线程（VSTO_Main，唯一STA线程），只能新建一个专用STA线程运行UI。\nAvalonia允许非STA线程，但考虑到VSTO依赖Windows平台和消息泵机制，建议UI线程依然使用STA模式。\nWPF/WinForms依赖Win32消息泵，同样可用WindowsFormsSynchronizationContext。\n示例：\npublic partial class ThisAddIn { private static SynchronizationContext _uiSyncContext; private void ThisAddIn_Startup(object sender, System.EventArgs e) { // 其它代码 // 创建专用 UI 线程 _uiThread = new Thread(() =\u003e { _uiSyncContext = new WindowsFormsSynchronizationContext(); SynchronizationContext.SetSynchronizationContext(_uiSyncContext); }) { Name = \"UI Thread\", IsBackground = true }; _uiThread.SetApartmentState(ApartmentState.STA); _uiThread.Start(); } } 利用SynchronizationContext.Post可在线程池、VSTO主线程与UI线程间安全传递数据。\n实际上，对于UI线程，我们更常用Dispatcher而非直接使用SynchronizationContext。\nReactive Extensions (Rx) 的调度器集成 Rx (Reactive Extensions) 的核心是调度异步事件和操作。它并不直接使用 SynchronizationContext，而是通过 IScheduler 来管理任务调度。\n幸运的是，Rx 为我们提供了 SynchronizationContextScheduler 类，可以轻松地将同步上下文封装成调度器：\n// 假设你已经有了某个线程的 SynchronizationContext，如 Office 线程或 UI 线程 var scheduler = new SynchronizationContextScheduler(SynchronizationContext.Current); 例如，在你的 VSTO 项目中：\n// 为 COM 线程创建调度器 SchedulerManager.COM = new SynchronizationContextScheduler(_officeSyncContext); // 为 UI 线程创建调度器 SchedulerManager.UI = new SynchronizationContextScheduler(_uiSyncContext); 这样，你就可以把这个 scheduler 传给 Rx 操作符，确保相关操作在正确的线程上执行。\n使用时，在Rx操作链中：\nobservable .ObserveOn(SchedulerManager.UI) // UI线程更新界面 .Subscribe(...); observable .ObserveOn(SchedulerManager.COM) // COM线程安全调用Office对象 .Subscribe(...); 对于Avalonia + ReactiveUI项目，Avalonia会自动初始化RxApp.MainThreadScheduler为UI线程调度器，无需额外设置。\n","wordCount":"190","inLanguage":"en","image":"http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E","datePublished":"2024-06-05T09:48:52+08:00","dateModified":"2024-06-05T09:48:52+08:00","author":{"@type":"Person","name":"Snailya"},"mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:1313/posts/vsto%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/"},"publisher":{"@type":"Organization","name":"Snailya虾啵啵","logo":{"@type":"ImageObject","url":"http://localhost:1313/%3Clink%20/%20abs%20url%3E"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="Snailya虾啵啵 (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>Snailya虾啵啵</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/search/ title=搜索><span>搜索</span></a></li><li><a href=http://localhost:1313/categories/ title=分类><span>分类</span></a></li><li><a href=http://localhost:1313/tags/ title=标签><span>标签</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a>&nbsp;»&nbsp;<a href=http://localhost:1313/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">VSTO线程模型</h1><div class=post-meta><span title='2024-06-05 09:48:52 +0800 CST'>June 5, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;190 words&nbsp;·&nbsp;Snailya&nbsp;|&nbsp;<a href=https://github.com/%3cpath_to_repo%3e/content/posts/VSTO%e7%ba%bf%e7%a8%8b%e6%a8%a1%e5%9e%8b.md rel="noopener noreferrer" target=_blank>Suggest Changes</a></div></header><div class=post-content><p>在VSTO开发领域，每个开发者都曾经历过这样的挫败：精心设计的插件界面在数据加载时陷入卡顿，复杂的计算过程使整个Office程序失去响应。这不是代码质量问题，而是VSTO特有的线程模型带来的挑战。本文将围绕如何利用独立线程和异步调度解决该问题进行剖析。</p><h2 id=vsto线程模型的本质矛盾>VSTO线程模型的本质矛盾<a hidden class=anchor aria-hidden=true href=#vsto线程模型的本质矛盾>#</a></h2><p>Office的COM对象是基于单线程单元（STA, Single Threaded Apartment）模型的。这个模型的好处是保障了线程安全，但也造成了性能瓶颈。具体表现：</p><ul><li>UI线程和Office线程绑在一起，做耗时数据读取或计算时，界面会卡死甚至完全无响应。</li><li>想用多线程访问COM对象？ 不行，需要走代理（Proxy）封送（marshalling）调用，开销大且复杂。</li></ul><p>这种设计就像双刃剑，让我们陷入两难：一边要保证线程安全，一边又想流畅不卡顿。</p><h2 id=突破瓶颈的思路线程分离--异步计算>突破瓶颈的思路：线程分离 + 异步计算<a hidden class=anchor aria-hidden=true href=#突破瓶颈的思路线程分离--异步计算>#</a></h2><p>要打破这个瓶颈，必须实现UI线程与Office线程的分离，并确保所有COM对象的访问都发生在Office线程上。同时，为避免业务逻辑阻塞UI或Office线程，计算应异步在线程池（TaskPool）中进行。</p><p>这带来关键问题：如何在不同线程间高效且安全地传递数据？</p><ul><li>如何在后台任务中发起Office数据读取，并调度到VSTO主线程执行？</li><li>数据处理完成后，如何将结果发回UI线程，满足UI线程禁止跨线程更新界面的要求？</li></ul><p>那具体怎么调度线程？如何跨线程安全调用Office对象并更新UI？这里，SynchronizationContext和调度器（Scheduler）派上用场了。</p><p>下面用时序图简单描述整体流程：</p><pre tabindex=0><code class=language-mermaid data-lang=mermaid>sequenceDiagram
+    UI线程-&gt;&gt;+线程池: 发起计算请求
+    线程池-&gt;&gt;+VSTO主线程: 通过Office的SyncContext或Scheduler获取数据
+    VSTO主线程--&gt;&gt;-线程池: 返回封送后的数据
+    线程池-&gt;&gt;线程池: 执行计算
+    线程池-&gt;&gt;+UI线程: 通过UI的SyncContext或Dispatcher更新界面
+</code></pre><h2 id=synchronizationcontext-的选型与实践>SynchronizationContext 的选型与实践<a hidden class=anchor aria-hidden=true href=#synchronizationcontext-的选型与实践>#</a></h2><h3 id=为-vsto-主线程设置上下文>为 VSTO 主线程设置上下文<a hidden class=anchor aria-hidden=true href=#为-vsto-主线程设置上下文>#</a></h3><p>SynchronizationContext是一种线程抽象机制，提供“将任务调度到指定线程”的能力。VSTO项目启动时默认无上下文，无法通过SynchronizationContext.Current直接获取VSTO主线程上下文。</p><p>一种解决方案是自定义上下文，但更简便的做法是利用Office主线程已有的Win32消息泵，使用WindowsFormsSynchronizationContext。尽管名字带“Windows Forms”，它不仅限于WinForms应用，只要线程是STA且运行Win32消息循环，它都能正常工作。</p><p>若需更细粒度的任务优先级控制，可考虑DispatcherSynchronizationContext，但它实现复杂且需手动启动消息泵。因职责已隔离，通常用WindowsFormsSynchronizationContext即可。</p><p>示例：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-CSharp data-lang=CSharp><span class=line><span class=cl><span class=kd>public</span> <span class=kd>partial</span> <span class=k>class</span> <span class=nc>ThisAddIn</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=kd>static</span> <span class=n>SynchronizationContext</span> <span class=n>_officeSyncContext</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>ThisAddIn_Startup</span><span class=p>(</span><span class=kt>object</span> <span class=n>sender</span><span class=p>,</span> <span class=n>System</span><span class=p>.</span><span class=n>EventArgs</span> <span class=n>e</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 为 VSTO 主线程设置上下文，供后续调度使用</span>
+</span></span><span class=line><span class=cl>        <span class=n>_officeSyncContext</span> <span class=p>=</span> <span class=k>new</span> <span class=n>WindowsFormsSynchronizationContext</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=n>SynchronizationContext</span><span class=p>.</span><span class=n>SetSynchronizationContext</span><span class=p>(</span><span class=n>_officeSyncContext</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 其他初始化代码</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><h3 id=在自建-ui-线程中设置上下文>在自建 UI 线程中设置上下文<a hidden class=anchor aria-hidden=true href=#在自建-ui-线程中设置上下文>#</a></h3><p>WPF和WinForms要求UI线程必须是STA，然而默认线程池线程为MTA，不适合做UI线程。为避免阻塞Office线程（VSTO_Main，唯一STA线程），只能新建一个专用STA线程运行UI。</p><p>Avalonia允许非STA线程，但考虑到VSTO依赖Windows平台和消息泵机制，建议UI线程依然使用STA模式。</p><p>WPF/WinForms依赖Win32消息泵，同样可用WindowsFormsSynchronizationContext。</p><p>示例：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-CSharp data-lang=CSharp><span class=line><span class=cl><span class=kd>public</span> <span class=kd>partial</span> <span class=k>class</span> <span class=nc>ThisAddIn</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=kd>static</span> <span class=n>SynchronizationContext</span> <span class=n>_uiSyncContext</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>ThisAddIn_Startup</span><span class=p>(</span><span class=kt>object</span> <span class=n>sender</span><span class=p>,</span> <span class=n>System</span><span class=p>.</span><span class=n>EventArgs</span> <span class=n>e</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 其它代码</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 创建专用 UI 线程</span>
+</span></span><span class=line><span class=cl>        <span class=n>_uiThread</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Thread</span><span class=p>(()</span> <span class=p>=&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>_uiSyncContext</span> <span class=p>=</span> <span class=k>new</span> <span class=n>WindowsFormsSynchronizationContext</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>            <span class=n>SynchronizationContext</span><span class=p>.</span><span class=n>SetSynchronizationContext</span><span class=p>(</span><span class=n>_uiSyncContext</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>})</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>Name</span> <span class=p>=</span> <span class=s>&#34;UI Thread&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=n>IsBackground</span> <span class=p>=</span> <span class=kc>true</span>
+</span></span><span class=line><span class=cl>        <span class=p>};</span>
+</span></span><span class=line><span class=cl>        <span class=n>_uiThread</span><span class=p>.</span><span class=n>SetApartmentState</span><span class=p>(</span><span class=n>ApartmentState</span><span class=p>.</span><span class=n>STA</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>_uiThread</span><span class=p>.</span><span class=n>Start</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>利用SynchronizationContext.Post可在线程池、VSTO主线程与UI线程间安全传递数据。</p><p>实际上，对于UI线程，我们更常用Dispatcher而非直接使用SynchronizationContext。</p><h2 id=reactive-extensions-rx-的调度器集成>Reactive Extensions (Rx) 的调度器集成<a hidden class=anchor aria-hidden=true href=#reactive-extensions-rx-的调度器集成>#</a></h2><p>Rx (Reactive Extensions) 的核心是调度异步事件和操作。它并不直接使用 SynchronizationContext，而是通过 IScheduler 来管理任务调度。</p><p>幸运的是，Rx 为我们提供了 SynchronizationContextScheduler 类，可以轻松地将同步上下文封装成调度器：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-CSharp data-lang=CSharp><span class=line><span class=cl><span class=c1>// 假设你已经有了某个线程的 SynchronizationContext，如 Office 线程或 UI 线程</span>
+</span></span><span class=line><span class=cl><span class=kt>var</span> <span class=n>scheduler</span> <span class=p>=</span> <span class=k>new</span> <span class=n>SynchronizationContextScheduler</span><span class=p>(</span><span class=n>SynchronizationContext</span><span class=p>.</span><span class=n>Current</span><span class=p>);</span>
+</span></span></code></pre></div><p>例如，在你的 VSTO 项目中：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-CSharp data-lang=CSharp><span class=line><span class=cl><span class=c1>// 为 COM 线程创建调度器</span>
+</span></span><span class=line><span class=cl><span class=n>SchedulerManager</span><span class=p>.</span><span class=n>COM</span> <span class=p>=</span> <span class=k>new</span> <span class=n>SynchronizationContextScheduler</span><span class=p>(</span><span class=n>_officeSyncContext</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 为 UI 线程创建调度器</span>
+</span></span><span class=line><span class=cl><span class=n>SchedulerManager</span><span class=p>.</span><span class=n>UI</span> <span class=p>=</span> <span class=k>new</span> <span class=n>SynchronizationContextScheduler</span><span class=p>(</span><span class=n>_uiSyncContext</span><span class=p>);</span>
+</span></span></code></pre></div><p>这样，你就可以把这个 scheduler 传给 Rx 操作符，确保相关操作在正确的线程上执行。</p><p>使用时，在Rx操作链中：</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-CSharp data-lang=CSharp><span class=line><span class=cl><span class=n>observable</span>
+</span></span><span class=line><span class=cl>    <span class=p>.</span><span class=n>ObserveOn</span><span class=p>(</span><span class=n>SchedulerManager</span><span class=p>.</span><span class=n>UI</span><span class=p>)</span>  <span class=c1>// UI线程更新界面</span>
+</span></span><span class=line><span class=cl>    <span class=p>.</span><span class=n>Subscribe</span><span class=p>(...);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>observable</span>
+</span></span><span class=line><span class=cl>    <span class=p>.</span><span class=n>ObserveOn</span><span class=p>(</span><span class=n>SchedulerManager</span><span class=p>.</span><span class=n>COM</span><span class=p>)</span> <span class=c1>// COM线程安全调用Office对象</span>
+</span></span><span class=line><span class=cl>    <span class=p>.</span><span class=n>Subscribe</span><span class=p>(...);</span>
+</span></span></code></pre></div><p>对于Avalonia + ReactiveUI项目，Avalonia会自动初始化RxApp.MainThreadScheduler为UI线程调度器，无需额外设置。</p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=next href=http://localhost:1313/posts/ae-pid%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/><span class=title>Next »</span><br><span>AE PID快速入门</span></a></nav></footer><script src=https://giscus.app/client.js data-repo=Snailya/snailya.github.io data-repo-id=R_kgDOLDeIag data-category=Announcements data-category-id=DIC_kwDOLDeIas4CcWGj data-mapping=pathname data-strict=0 data-reactions-enabled=1 data-emit-metadata=0 data-input-position=bottom data-theme=preferred_color_scheme data-lang=zh-CN crossorigin=anonymous async></script></article></main><footer class=footer><span>&copy; 2025 <a href=http://localhost:1313/>Snailya虾啵啵</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
