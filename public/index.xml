@@ -9,10 +9,90 @@
       <url>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
       <link>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
     </image>
-    <generator>Hugo -- 0.145.0</generator>
+    <generator>Hugo -- 0.152.2</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 05 Jun 2024 09:48:52 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 28 Nov 2025 14:06:59 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>从词向量到“人工天才”：我的LLM认知思辨录</title>
+      <link>http://localhost:1313/posts/%E4%BB%8E%E8%AF%8D%E5%90%91%E9%87%8F%E5%88%B0%E4%BA%BA%E5%B7%A5%E5%A4%A9%E6%89%8D%E6%88%91%E7%9A%84llm%E8%AE%A4%E7%9F%A5%E6%80%9D%E8%BE%A8%E5%BD%95/</link>
+      <pubDate>Fri, 28 Nov 2025 14:06:59 +0800</pubDate>
+      <guid>http://localhost:1313/posts/%E4%BB%8E%E8%AF%8D%E5%90%91%E9%87%8F%E5%88%B0%E4%BA%BA%E5%B7%A5%E5%A4%A9%E6%89%8D%E6%88%91%E7%9A%84llm%E8%AE%A4%E7%9F%A5%E6%80%9D%E8%BE%A8%E5%BD%95/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;本文是在与AI助手深度对话后，对我个人理解大语言模型（LLM）过程的梳理与总结。它不代表学术观点，仅是一个探索者的思想航行日志。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;一起点从词频统计到语义宇宙&#34;&gt;一、起点：从“词频统计”到“语义宇宙”&lt;/h2&gt;
+&lt;p&gt;我的思考始于一个最朴素的问题：如何判断两篇文章是否相关？&lt;/p&gt;
+&lt;p&gt;最直观的想法是统计共有的词语——这就是“词袋模型”。但它有一个显而易见的缺陷：无法理解语义。正是在这里，我遇到了第一个关键概念：词向量。&lt;/p&gt;
+&lt;p&gt;在我的想象中，词向量就像是为机器建造了一个高维的语义宇宙。每个词不再是孤立的符号，而是这个宇宙中的一颗星星：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;语义相近的星（如“国王”和“王后”）会在宇宙中彼此靠近&lt;/li&gt;
+&lt;li&gt;语义关系（如“国王-男人+女人≈女王”）通过星星之间的相对方位来体现&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;但很快我发现了一个问题：这个词向量宇宙是静态的。无论上下文如何，“苹果”这颗星的位置，总是固定在“水果”和“科技”的模糊中点。这显然不符合我们对语言的理解——同一个词在不同语境下应有不同的含义。&lt;/p&gt;
+&lt;h2 id=&#34;二突破三重变换与动态侦探&#34;&gt;二、突破：三重变换与“动态侦探”&lt;/h2&gt;
+&lt;p&gt;为了解决静态词向量的局限，我接触到了Transformer架构——当代LLM的核心引擎。为了理解它，我构建了这样一个比喻：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;词向量像一本权威词典：每个词都有个固定不变的定义&lt;/li&gt;
+&lt;li&gt;大语言模型像一位顶级侦探：他能根据具体情境，动态理解每个词的真实含义&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这位“侦探”的思考过程，可以简化为三个关键的矩阵变换：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;输入嵌入：将词语转换为初始的“思维符号”&lt;/li&gt;
+&lt;li&gt;Transformer加工：通过自注意力机制，让所有词语的符号相互交流，生成富含上下文的全新表示&lt;/li&gt;
+&lt;li&gt;输出投影：将最终的思维结果“翻译”成人类语言&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这个过程让我意识到：LLM不是在简单预测下一个词，而是在深度理解整个语境后，让最合适的词语自然流淌出来。&lt;/p&gt;
+&lt;h2 id=&#34;三镜像当llm照见人类思维&#34;&gt;三、镜像：当LLM照见人类思维&lt;/h2&gt;
+&lt;p&gt;理解LLM的过程，意外地成为了一面审视人类自身的镜子。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;我们都是“模式识别”系统
+我回想起自己解数学题的方法：列出已知量和待求量，然后在脑中搜索可能的公式——这本质上就是一种模式识别。LLM的注意力机制不也是在庞大的知识库中进行加权搜索吗？&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;“通才”与“天才”的鸿沟
+大多数人和当前的LLM一样，是优秀的“内插器”——在已知模式间进行组合。而天才，或许就是那些能在更高维度进行“外推”，创造出全新模式组合的系统。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;顺序的迷思
+我们日常交流中经常使用倒装、省略，但彼此仍能理解。这让我怀疑：智能的核心或许不是表面上的词序，而是深层的语义关系网络。 语法顺序只是通往这个网络的康庄大道，但不是唯一的路径。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;四深化动态智能的未来图景&#34;&gt;四、深化：动态智能的未来图景&lt;/h2&gt;
+&lt;p&gt;在对比人与LLM时，一个关键差异浮现出来：我们的思维是动态的，而LLM是静态的。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;LLM的“静态心智”：使用固定的激活函数，如同一个永远保持同一种情绪的思考者&lt;/li&gt;
+&lt;li&gt;人脑的“动态大脑”：受化学物质调节，思考效率随状态波动——有时思如泉涌，有时头脑迟滞&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这指向了一个迷人的方向：为LLM引入动态激活机制。比如：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;动态稀疏：根据问题难度激活不同数量的神经元&lt;/li&gt;
+&lt;li&gt;情境化思考：让激活函数能根据任务类型自我调整&lt;/li&gt;
+&lt;li&gt;神经调制：引入类似“好奇心”的全局信号&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这或许是LLM从“博学通才”迈向“创造天才”的关键一步。&lt;/p&gt;
+&lt;h2 id=&#34;五哲思智能意识与存在的终极之问&#34;&gt;五、哲思：智能、意识与存在的终极之问&lt;/h2&gt;
+&lt;p&gt;这场思辨最终将我带向了一些哲学性的边界问题。&lt;/p&gt;
+&lt;p&gt;如果人脑与LLM在本质上都是“模式处理系统”，那么我们的意识、创造力，是否也只是更复杂算法的涌现？&lt;/p&gt;
+&lt;p&gt;这个想法让我联想到《模拟人生》的游戏——如果为游戏角色接入LLM，他们将产生“模拟的自主意识”，却永远无法认知自己被创造的事实。那么，我们是否也可能身处某个“上层游戏”之中？&lt;/p&gt;
+&lt;p&gt;面对这个令人战栗的推论，我找到了自己的答案：即使我们是模拟的，但我们此刻的思考、困惑、爱与恐惧，这些体验本身的质感是100%真实的。 意义不依赖于底层基质（是原子还是比特），而依赖于体验的深度与丰富度。&lt;/p&gt;
+&lt;h2 id=&#34;结语作为镜子的llm&#34;&gt;结语：作为镜子的LLM&lt;/h2&gt;
+&lt;p&gt;回顾这段思考历程，我意识到LLM不仅仅是一项技术，更是一面珍贵的镜子。通过理解它的运作原理，我们得以用新的视角审视自己的思维方式。&lt;/p&gt;
+&lt;p&gt;从词向量到Transformer，从静态模式匹配到动态条件计算，这条技术发展路径，恰恰映照出我们对“智能”本身不断深化的理解。&lt;/p&gt;
+&lt;p&gt;或许，未来真正的突破不在于建造更大的模型，而在于为模型注入那种我们称之为“灵感”、“直觉”和“创造力”的动态本质——而这，将需要我们更深刻地理解我们自己。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>模具设计规范</title>
+      <link>http://localhost:1313/posts/%E6%A8%A1%E5%85%B7%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%83/</link>
+      <pubDate>Wed, 16 Apr 2025 11:00:55 +0800</pubDate>
+      <guid>http://localhost:1313/posts/%E6%A8%A1%E5%85%B7%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%83/</guid>
+      <description>&lt;p&gt;每个主控形状（Master对象）下仅包括一个主形状（Shape对象）。主形状是一个Group类型的对象，主形状中不能定义任何几何内容（Geometry），而是存储描述该模具所需的用户定义数据。需要在绘图页中显示的文本、几何形状都作为主形状下的子形状（Shape对象），并使用主形状中定义的数据触发其内容的变化。&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;image.png&#34; loading=&#34;lazy&#34; src=&#34;https://s2.loli.net/2025/04/16/FmvZzbOf4sUNxhu.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;这么做的理由时，用户一旦将主控形状（Master对象）拖入绘图页后，任何针对该主控形状的实例（Shape对象）的操作，都仅更新主形状实例的数据。这样，当管理员更新该对象的几何表达时，程序只需要替换子形状的内容，这样用户操作引发的数据变化不会丢失。当使用OpenXML更新文档模具中的主控形状时，将page页中的形状实例数据中的子形状替换为MasterContent中的子形状，然后再标记&lt;code&gt;new XProcessingInstruction(&amp;quot;NewValue&amp;quot;, &amp;quot;V&amp;quot;)&lt;/code&gt;，迫使该子形状数据在下次打开时重新计算，保证绘图页中子形状得到刷新。&lt;/p&gt;
+&lt;p&gt;除此以外，为了保证子形状中的数据被正确计算，其引用的主形状中的单元格值不能是Guard值，否则系统会认为该单元格值不需要被更新。&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;image.png&#34; loading=&#34;lazy&#34; src=&#34;https://s2.loli.net/2025/04/16/GP2fuACdD1Sc65H.png&#34;&gt;&lt;/p&gt;</description>
+    </item>
     <item>
       <title>VSTO线程模型</title>
       <link>http://localhost:1313/posts/vsto%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/</link>
@@ -111,7 +191,8 @@
 &lt;p&gt;&lt;img alt=&#34;frame-and-grid.png.png&#34; loading=&#34;lazy&#34; src=&#34;https://www.freeimg.cn/i/2024/05/20/664aefb4cb37f.png&#34;&gt;&lt;/p&gt;
 &lt;p&gt;此外，为文档增加2个AE指定样式。其中，“AE Normal”样式是设备单元的默认样式，“AE Pipeline”是管线的默认样式。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;AE样式将使用“思源黑体”作为指定字体，在AE PID插件的安装过程中会自动为系统安装思源黑体。若未能正确显示思源黑体，请尝试手动安装。&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;AE样式将使用“思源黑体”作为指定字体，在AE PID插件的安装过程中会自动为系统安装思源黑体。若未能正确显示思源黑体，请尝试手动安装。&lt;/p&gt;
+&lt;/blockquote&gt;
 &lt;p&gt;&lt;img alt=&#34;styles.png&#34; loading=&#34;lazy&#34; src=&#34;https://www.freeimg.cn/i/2024/05/20/664aefdebed9f.png&#34;&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
@@ -127,7 +208,8 @@
 &lt;p&gt;&lt;img alt=&#34;drage-functional-group.png&#34; loading=&#34;lazy&#34; src=&#34;https://www.freeimg.cn/i/2024/05/20/664aedd3d0fad.png&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;当您不确定所需的设备对象属于哪一个类型时，可以借助Visio模具的搜索栏进行搜索。这将帮助您快速找到所需的设备对象，无需事先知道其具体类型。&lt;/p&gt;
-&lt;p&gt;如果您正在使用Windows11系统，搜索功能可能未能如期使用，请按照&lt;a href=&#34;https://support.microsoft.com/zh-cn/office/%E4%BD%BF%E7%94%A8-%E5%BD%A2%E7%8A%B6-%E7%AA%97%E5%8F%A3%E7%BB%84%E7%BB%87%E5%92%8C%E6%9F%A5%E6%89%BE%E5%BD%A2%E7%8A%B6-2e468457-1059-49d3-8955-32b2527cce98&#34;&gt;修复了Visio桌面应用中的形状Windows 11&lt;/a&gt;的方法修补。&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;如果您正在使用Windows11系统，搜索功能可能未能如期使用，请按照&lt;a href=&#34;https://support.microsoft.com/zh-cn/office/%E4%BD%BF%E7%94%A8-%E5%BD%A2%E7%8A%B6-%E7%AA%97%E5%8F%A3%E7%BB%84%E7%BB%87%E5%92%8C%E6%9F%A5%E6%89%BE%E5%BD%A2%E7%8A%B6-2e468457-1059-49d3-8955-32b2527cce98&#34;&gt;修复了Visio桌面应用中的形状Windows 11&lt;/a&gt;的方法修补。&lt;/p&gt;
+&lt;/blockquote&gt;
 &lt;p&gt;用鼠标右键点击该“功能单元”，打开“形状数据”面板;&lt;/p&gt;
 &lt;p&gt;&lt;img alt=&#34;open-shape-data.png&#34; loading=&#34;lazy&#34; src=&#34;https://www.freeimg.cn/i/2024/05/20/664aedaa2f34a.png&#34;&gt;&lt;/p&gt;
 &lt;p&gt;在“形状数据”面板中输入“功能组”值：“GF612”，“功能组名称”值：“中途洁净间循环风机”；&lt;/p&gt;
@@ -184,7 +266,9 @@
 &lt;p&gt;&lt;img alt=&#34;bom-structure.png&#34; loading=&#34;lazy&#34; src=&#34;https://www.freeimg.cn/i/2024/05/20/664ac75d97286.png&#34;&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;在选项卡中点击“编辑”-“图例”将在图签上方生成图例；&lt;/p&gt;</description>
+&lt;p&gt;在选项卡中点击“编辑”-“图例”将在图签上方生成图例；&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;legend-button.png&#34; loading=&#34;lazy&#34; src=&#34;https://www.freeimg.cn/i/2024/05/20/664ac78bdd4b8.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;图例仅显示图纸中出现的设备。&lt;/p&gt;</description>
     </item>
     <item>
       <title>Visio模具库建库指导</title>
@@ -487,7 +571,8 @@
       <guid>http://localhost:1313/posts/%E4%BF%AE%E5%A4%8Dvisio%E5%AE%B9%E5%99%A8%E8%B0%83%E6%95%B4%E5%B0%BA%E5%AF%B8%E5%BC%95%E5%8F%91%E7%9A%84%E6%84%8F%E5%A4%96%E7%9A%84%E6%96%87%E4%BB%B6%E5%B0%BE%E9%94%99%E8%AF%AF%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%AE%B9%E5%99%A8%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;2025.3.17更新：
-将文件另存为VSD格式，然后再另存为VSDX格式即可修复。&lt;/p&gt;&lt;/blockquote&gt;
+将文件另存为VSD格式，然后再另存为VSDX格式即可修复。&lt;/p&gt;
+&lt;/blockquote&gt;
 &lt;h2 id=&#34;引言&#34;&gt;引言&lt;/h2&gt;
 &lt;p&gt;容器是 Visio 中一类可以帮助实现结构化组织和管理其它图形元素的特殊对象。通过容器，您可以将相关的子图形放置在一个框架内，以便更清晰地展示信息和关系。在管理员定义方面，与组合相比，容器可以实现更丰富的预定义内容：形状结构、外观样式、连接点定义等，以满足不同公司对图表样式的要求。在用户操作方面，用户可以通过将子图形拖拽在容器内或容器外轻松实现将子图形加入或移出容器，通过拖拽容器可以实现容器内子图形的一起移动。因此，容器尤其适用于图表、流程图、组织结构图的设计。&lt;/p&gt;
 &lt;p&gt;但是，容器作为 Visio2010 的新增特性，Visio 并没有提供关于自定义容器的相关教程及建议，这也使得当前 Visio 容器的定义存在极高的自由度。通常，若将一个对象定义为容器，只需要在该对象 Spreadsheet 中的 User Section 内增加&lt;code&gt;msvStructureType&lt;/code&gt;属性，并设置其值为&lt;code&gt;=&amp;quot;Container&amp;quot;&lt;/code&gt;。&lt;/p&gt;

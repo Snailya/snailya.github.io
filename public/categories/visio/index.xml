@@ -9,7 +9,7 @@
       <url>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
       <link>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
     </image>
-    <generator>Hugo -- 0.145.0</generator>
+    <generator>Hugo -- 0.152.2</generator>
     <language>en</language>
     <lastBuildDate>Wed, 05 Jun 2024 09:48:52 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/categories/visio/index.xml" rel="self" type="application/rss+xml" />
@@ -111,7 +111,8 @@
 &lt;p&gt;&lt;img alt=&#34;frame-and-grid.png.png&#34; loading=&#34;lazy&#34; src=&#34;https://www.freeimg.cn/i/2024/05/20/664aefb4cb37f.png&#34;&gt;&lt;/p&gt;
 &lt;p&gt;此外，为文档增加2个AE指定样式。其中，“AE Normal”样式是设备单元的默认样式，“AE Pipeline”是管线的默认样式。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;AE样式将使用“思源黑体”作为指定字体，在AE PID插件的安装过程中会自动为系统安装思源黑体。若未能正确显示思源黑体，请尝试手动安装。&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;AE样式将使用“思源黑体”作为指定字体，在AE PID插件的安装过程中会自动为系统安装思源黑体。若未能正确显示思源黑体，请尝试手动安装。&lt;/p&gt;
+&lt;/blockquote&gt;
 &lt;p&gt;&lt;img alt=&#34;styles.png&#34; loading=&#34;lazy&#34; src=&#34;https://www.freeimg.cn/i/2024/05/20/664aefdebed9f.png&#34;&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
@@ -127,7 +128,8 @@
 &lt;p&gt;&lt;img alt=&#34;drage-functional-group.png&#34; loading=&#34;lazy&#34; src=&#34;https://www.freeimg.cn/i/2024/05/20/664aedd3d0fad.png&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;当您不确定所需的设备对象属于哪一个类型时，可以借助Visio模具的搜索栏进行搜索。这将帮助您快速找到所需的设备对象，无需事先知道其具体类型。&lt;/p&gt;
-&lt;p&gt;如果您正在使用Windows11系统，搜索功能可能未能如期使用，请按照&lt;a href=&#34;https://support.microsoft.com/zh-cn/office/%E4%BD%BF%E7%94%A8-%E5%BD%A2%E7%8A%B6-%E7%AA%97%E5%8F%A3%E7%BB%84%E7%BB%87%E5%92%8C%E6%9F%A5%E6%89%BE%E5%BD%A2%E7%8A%B6-2e468457-1059-49d3-8955-32b2527cce98&#34;&gt;修复了Visio桌面应用中的形状Windows 11&lt;/a&gt;的方法修补。&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;如果您正在使用Windows11系统，搜索功能可能未能如期使用，请按照&lt;a href=&#34;https://support.microsoft.com/zh-cn/office/%E4%BD%BF%E7%94%A8-%E5%BD%A2%E7%8A%B6-%E7%AA%97%E5%8F%A3%E7%BB%84%E7%BB%87%E5%92%8C%E6%9F%A5%E6%89%BE%E5%BD%A2%E7%8A%B6-2e468457-1059-49d3-8955-32b2527cce98&#34;&gt;修复了Visio桌面应用中的形状Windows 11&lt;/a&gt;的方法修补。&lt;/p&gt;
+&lt;/blockquote&gt;
 &lt;p&gt;用鼠标右键点击该“功能单元”，打开“形状数据”面板;&lt;/p&gt;
 &lt;p&gt;&lt;img alt=&#34;open-shape-data.png&#34; loading=&#34;lazy&#34; src=&#34;https://www.freeimg.cn/i/2024/05/20/664aedaa2f34a.png&#34;&gt;&lt;/p&gt;
 &lt;p&gt;在“形状数据”面板中输入“功能组”值：“GF612”，“功能组名称”值：“中途洁净间循环风机”；&lt;/p&gt;
@@ -184,7 +186,9 @@
 &lt;p&gt;&lt;img alt=&#34;bom-structure.png&#34; loading=&#34;lazy&#34; src=&#34;https://www.freeimg.cn/i/2024/05/20/664ac75d97286.png&#34;&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;在选项卡中点击“编辑”-“图例”将在图签上方生成图例；&lt;/p&gt;</description>
+&lt;p&gt;在选项卡中点击“编辑”-“图例”将在图签上方生成图例；&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;legend-button.png&#34; loading=&#34;lazy&#34; src=&#34;https://www.freeimg.cn/i/2024/05/20/664ac78bdd4b8.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;图例仅显示图纸中出现的设备。&lt;/p&gt;</description>
     </item>
     <item>
       <title>Visio模具库建库指导</title>
@@ -400,7 +404,8 @@
       <guid>http://localhost:1313/posts/%E4%BF%AE%E5%A4%8Dvisio%E5%AE%B9%E5%99%A8%E8%B0%83%E6%95%B4%E5%B0%BA%E5%AF%B8%E5%BC%95%E5%8F%91%E7%9A%84%E6%84%8F%E5%A4%96%E7%9A%84%E6%96%87%E4%BB%B6%E5%B0%BE%E9%94%99%E8%AF%AF%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%AE%B9%E5%99%A8%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;2025.3.17更新：
-将文件另存为VSD格式，然后再另存为VSDX格式即可修复。&lt;/p&gt;&lt;/blockquote&gt;
+将文件另存为VSD格式，然后再另存为VSDX格式即可修复。&lt;/p&gt;
+&lt;/blockquote&gt;
 &lt;h2 id=&#34;引言&#34;&gt;引言&lt;/h2&gt;
 &lt;p&gt;容器是 Visio 中一类可以帮助实现结构化组织和管理其它图形元素的特殊对象。通过容器，您可以将相关的子图形放置在一个框架内，以便更清晰地展示信息和关系。在管理员定义方面，与组合相比，容器可以实现更丰富的预定义内容：形状结构、外观样式、连接点定义等，以满足不同公司对图表样式的要求。在用户操作方面，用户可以通过将子图形拖拽在容器内或容器外轻松实现将子图形加入或移出容器，通过拖拽容器可以实现容器内子图形的一起移动。因此，容器尤其适用于图表、流程图、组织结构图的设计。&lt;/p&gt;
 &lt;p&gt;但是，容器作为 Visio2010 的新增特性，Visio 并没有提供关于自定义容器的相关教程及建议，这也使得当前 Visio 容器的定义存在极高的自由度。通常，若将一个对象定义为容器，只需要在该对象 Spreadsheet 中的 User Section 内增加&lt;code&gt;msvStructureType&lt;/code&gt;属性，并设置其值为&lt;code&gt;=&amp;quot;Container&amp;quot;&lt;/code&gt;。&lt;/p&gt;

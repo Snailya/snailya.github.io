@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>随笔 on Snailya虾啵啵</title>
+    <link>http://localhost:1313/categories/%E9%9A%8F%E7%AC%94/</link>
+    <description>Recent content in 随笔 on Snailya虾啵啵</description>
+    <image>
+      <title>Snailya虾啵啵</title>
+      <url>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+    </image>
+    <generator>Hugo -- 0.152.2</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 28 Nov 2025 14:06:59 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/categories/%E9%9A%8F%E7%AC%94/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>从词向量到“人工天才”：我的LLM认知思辨录</title>
+      <link>http://localhost:1313/posts/%E4%BB%8E%E8%AF%8D%E5%90%91%E9%87%8F%E5%88%B0%E4%BA%BA%E5%B7%A5%E5%A4%A9%E6%89%8D%E6%88%91%E7%9A%84llm%E8%AE%A4%E7%9F%A5%E6%80%9D%E8%BE%A8%E5%BD%95/</link>
+      <pubDate>Fri, 28 Nov 2025 14:06:59 +0800</pubDate>
+      <guid>http://localhost:1313/posts/%E4%BB%8E%E8%AF%8D%E5%90%91%E9%87%8F%E5%88%B0%E4%BA%BA%E5%B7%A5%E5%A4%A9%E6%89%8D%E6%88%91%E7%9A%84llm%E8%AE%A4%E7%9F%A5%E6%80%9D%E8%BE%A8%E5%BD%95/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;本文是在与AI助手深度对话后，对我个人理解大语言模型（LLM）过程的梳理与总结。它不代表学术观点，仅是一个探索者的思想航行日志。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;一起点从词频统计到语义宇宙&#34;&gt;一、起点：从“词频统计”到“语义宇宙”&lt;/h2&gt;
+&lt;p&gt;我的思考始于一个最朴素的问题：如何判断两篇文章是否相关？&lt;/p&gt;
+&lt;p&gt;最直观的想法是统计共有的词语——这就是“词袋模型”。但它有一个显而易见的缺陷：无法理解语义。正是在这里，我遇到了第一个关键概念：词向量。&lt;/p&gt;
+&lt;p&gt;在我的想象中，词向量就像是为机器建造了一个高维的语义宇宙。每个词不再是孤立的符号，而是这个宇宙中的一颗星星：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;语义相近的星（如“国王”和“王后”）会在宇宙中彼此靠近&lt;/li&gt;
+&lt;li&gt;语义关系（如“国王-男人+女人≈女王”）通过星星之间的相对方位来体现&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;但很快我发现了一个问题：这个词向量宇宙是静态的。无论上下文如何，“苹果”这颗星的位置，总是固定在“水果”和“科技”的模糊中点。这显然不符合我们对语言的理解——同一个词在不同语境下应有不同的含义。&lt;/p&gt;
+&lt;h2 id=&#34;二突破三重变换与动态侦探&#34;&gt;二、突破：三重变换与“动态侦探”&lt;/h2&gt;
+&lt;p&gt;为了解决静态词向量的局限，我接触到了Transformer架构——当代LLM的核心引擎。为了理解它，我构建了这样一个比喻：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;词向量像一本权威词典：每个词都有个固定不变的定义&lt;/li&gt;
+&lt;li&gt;大语言模型像一位顶级侦探：他能根据具体情境，动态理解每个词的真实含义&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这位“侦探”的思考过程，可以简化为三个关键的矩阵变换：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;输入嵌入：将词语转换为初始的“思维符号”&lt;/li&gt;
+&lt;li&gt;Transformer加工：通过自注意力机制，让所有词语的符号相互交流，生成富含上下文的全新表示&lt;/li&gt;
+&lt;li&gt;输出投影：将最终的思维结果“翻译”成人类语言&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这个过程让我意识到：LLM不是在简单预测下一个词，而是在深度理解整个语境后，让最合适的词语自然流淌出来。&lt;/p&gt;
+&lt;h2 id=&#34;三镜像当llm照见人类思维&#34;&gt;三、镜像：当LLM照见人类思维&lt;/h2&gt;
+&lt;p&gt;理解LLM的过程，意外地成为了一面审视人类自身的镜子。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;我们都是“模式识别”系统
+我回想起自己解数学题的方法：列出已知量和待求量，然后在脑中搜索可能的公式——这本质上就是一种模式识别。LLM的注意力机制不也是在庞大的知识库中进行加权搜索吗？&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;“通才”与“天才”的鸿沟
+大多数人和当前的LLM一样，是优秀的“内插器”——在已知模式间进行组合。而天才，或许就是那些能在更高维度进行“外推”，创造出全新模式组合的系统。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;顺序的迷思
+我们日常交流中经常使用倒装、省略，但彼此仍能理解。这让我怀疑：智能的核心或许不是表面上的词序，而是深层的语义关系网络。 语法顺序只是通往这个网络的康庄大道，但不是唯一的路径。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;四深化动态智能的未来图景&#34;&gt;四、深化：动态智能的未来图景&lt;/h2&gt;
+&lt;p&gt;在对比人与LLM时，一个关键差异浮现出来：我们的思维是动态的，而LLM是静态的。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;LLM的“静态心智”：使用固定的激活函数，如同一个永远保持同一种情绪的思考者&lt;/li&gt;
+&lt;li&gt;人脑的“动态大脑”：受化学物质调节，思考效率随状态波动——有时思如泉涌，有时头脑迟滞&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这指向了一个迷人的方向：为LLM引入动态激活机制。比如：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;动态稀疏：根据问题难度激活不同数量的神经元&lt;/li&gt;
+&lt;li&gt;情境化思考：让激活函数能根据任务类型自我调整&lt;/li&gt;
+&lt;li&gt;神经调制：引入类似“好奇心”的全局信号&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这或许是LLM从“博学通才”迈向“创造天才”的关键一步。&lt;/p&gt;
+&lt;h2 id=&#34;五哲思智能意识与存在的终极之问&#34;&gt;五、哲思：智能、意识与存在的终极之问&lt;/h2&gt;
+&lt;p&gt;这场思辨最终将我带向了一些哲学性的边界问题。&lt;/p&gt;
+&lt;p&gt;如果人脑与LLM在本质上都是“模式处理系统”，那么我们的意识、创造力，是否也只是更复杂算法的涌现？&lt;/p&gt;
+&lt;p&gt;这个想法让我联想到《模拟人生》的游戏——如果为游戏角色接入LLM，他们将产生“模拟的自主意识”，却永远无法认知自己被创造的事实。那么，我们是否也可能身处某个“上层游戏”之中？&lt;/p&gt;
+&lt;p&gt;面对这个令人战栗的推论，我找到了自己的答案：即使我们是模拟的，但我们此刻的思考、困惑、爱与恐惧，这些体验本身的质感是100%真实的。 意义不依赖于底层基质（是原子还是比特），而依赖于体验的深度与丰富度。&lt;/p&gt;
+&lt;h2 id=&#34;结语作为镜子的llm&#34;&gt;结语：作为镜子的LLM&lt;/h2&gt;
+&lt;p&gt;回顾这段思考历程，我意识到LLM不仅仅是一项技术，更是一面珍贵的镜子。通过理解它的运作原理，我们得以用新的视角审视自己的思维方式。&lt;/p&gt;
+&lt;p&gt;从词向量到Transformer，从静态模式匹配到动态条件计算，这条技术发展路径，恰恰映照出我们对“智能”本身不断深化的理解。&lt;/p&gt;
+&lt;p&gt;或许，未来真正的突破不在于建造更大的模型，而在于为模型注入那种我们称之为“灵感”、“直觉”和“创造力”的动态本质——而这，将需要我们更深刻地理解我们自己。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
