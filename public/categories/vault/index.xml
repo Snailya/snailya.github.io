@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Vault on Snailya虾啵啵</title>
+    <link>http://localhost:1313/categories/vault/</link>
+    <description>Recent content in Vault on Snailya虾啵啵</description>
+    <image>
+      <title>Snailya虾啵啵</title>
+      <url>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+    </image>
+    <generator>Hugo -- 0.152.2</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 16 Dec 2025 14:48:40 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/categories/vault/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Vault Data Standard (VDS)二次开发速查笔记</title>
+      <link>http://localhost:1313/posts/vault-data-standard-vds%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91%E9%80%9F%E6%9F%A5%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Tue, 16 Dec 2025 14:48:40 +0800</pubDate>
+      <guid>http://localhost:1313/posts/vault-data-standard-vds%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91%E9%80%9F%E6%9F%A5%E7%AC%94%E8%AE%B0/</guid>
+      <description>&lt;h2 id=&#34;一什么是-autodesk-vault-data-standardvds&#34;&gt;一、什么是 Autodesk Vault Data Standard（VDS）？&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;常见误解纠正&lt;/strong&gt;：&lt;br&gt;
+名称 &lt;em&gt;Data Standard&lt;/em&gt; 并非指“数据校验（Validation）”，而是 &lt;strong&gt;“数据标准化（Standardization）”&lt;/strong&gt; —— 它的核心使命是：&lt;br&gt;
+&lt;strong&gt;在用户输入源头，将自由、随意、不一致的数据，转化为结构化、规范、可被系统理解的属性值&lt;/strong&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;-它解决什么问题&#34;&gt;▸ 它解决什么问题？&lt;/h3&gt;
+&lt;p&gt;在未启用 Data Standard 时，Vault 用户检入文件仅能填写极少数基础字段（如文件名、生命周期状态），大量业务属性（如 &lt;code&gt;型号&lt;/code&gt;、&lt;code&gt;流量&lt;/code&gt;、&lt;code&gt;材质&lt;/code&gt;、&lt;code&gt;明细写法&lt;/code&gt;）依赖后续手动补录，极易导致：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;属性缺失、错填、单位混乱（&lt;code&gt;1500rpm&lt;/code&gt; vs &lt;code&gt;1500 RPM&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;同类文件规格描述格式不一（&lt;code&gt;Q=10m³/h, H=20m&lt;/code&gt; vs &lt;code&gt;10×20&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;CAD 与 Vault 属性不同步&lt;br&gt;
+→ 最终使得自动化、检索、BOM 生成等高级功能失效。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-它如何工作&#34;&gt;▸ 它如何工作？&lt;/h3&gt;
+&lt;p&gt;当启用 Data Standard 后，在以下关键操作时，&lt;strong&gt;自动弹出一个标准化数据录入窗口&lt;/strong&gt;（常称 &lt;em&gt;Property Dialog&lt;/em&gt;）：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Vault Client 中：
+&lt;ul&gt;
+&lt;li&gt;新建/编辑 &lt;strong&gt;文件&lt;/strong&gt;（对应 &lt;code&gt;File.xaml&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;新建/编辑 &lt;strong&gt;文件夹&lt;/strong&gt;（对应 &lt;code&gt;Folder.xaml&lt;/code&gt;）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Inventor / AutoCAD 中：
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;检入（Check In）&lt;/strong&gt; 文件时&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;保存到 Vault&lt;/strong&gt; 时&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;该窗口默认采用 &lt;strong&gt;左右双栏布局&lt;/strong&gt;：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;区域&lt;/th&gt;
+          &lt;th&gt;内容&lt;/th&gt;
+          &lt;th&gt;控制方式&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;左侧面板&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;固定属性（Static Properties）&lt;/strong&gt;&lt;!-- raw HTML omitted --&gt;由 XAML 手动定义的控件（如 &lt;code&gt;&amp;lt;TextBox&amp;gt;&lt;/code&gt;、&lt;code&gt;&amp;lt;ComboBox&amp;gt;&lt;/code&gt;）&lt;/td&gt;
+          &lt;td&gt;修改 &lt;code&gt;File.xaml&lt;/code&gt; / &lt;code&gt;Folder.xaml&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;右侧面板&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;动态属性 Grid（Dynamic Properties）&lt;/strong&gt;&lt;!-- raw HTML omitted --&gt;自动列出该 Vault Category 下关联的所有 Attribute&lt;/td&gt;
+          &lt;td&gt;由 &lt;code&gt;DynamicProperties.xml&lt;/code&gt; 控制显隐、顺序、别名&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;补充说明&lt;/strong&gt;：除文件（File）与文件夹（Folder）外，以下对象也支持 Data Standard（较少用但存在）：&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
